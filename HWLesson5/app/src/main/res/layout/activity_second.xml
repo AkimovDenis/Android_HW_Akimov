@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Имя пользователя"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/btnUpperCase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Перевести имя в заглавные буквы"/>
+
+    <Button
+        android:id="@+id/btnOriginal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Оставить написание имени как есть"
+        android:layout_marginTop="10dp"/>
+</LinearLayout>
