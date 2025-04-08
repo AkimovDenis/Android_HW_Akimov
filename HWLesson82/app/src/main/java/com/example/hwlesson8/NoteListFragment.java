@@ -16,43 +16,48 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-// TaskListFragment.java
-public class TaskListFragment extends Fragment {
+public class NoteListFragment extends Fragment {
+
     private RecyclerView recyclerView;
     private NoteAdapter adapter;
-    private ArrayList<Note> taskList;
-    private TaskListListener listener;
+    private ArrayList<Note> noteList;
+    private NoteListListener listener;
 
-    public interface TaskListListener {
-        void onAddTaskClicked();
-        void onTaskSelected(int position);
+    public interface NoteListListener {
+        void onNoteSelected(int position);
+
+        void onEditNoteClicked(Note note, int position);
     }
 
-    public static TaskListFragment newInstance(ArrayList<Note> tasks) {
-        TaskListFragment fragment = new TaskListFragment();
+    public static NoteListFragment newInstance(ArrayList<Note> notes) {
+        NoteListFragment fragment = new NoteListFragment();
         Bundle args = new Bundle();
-        args.putSerializable("tasks", tasks);
+        args.putSerializable("notes", notes);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_task_list, container, false);
-        recyclerView = view.findViewById(R.id.recycler_view);
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        View view = inflater.inflate(R.layout.fragment_note_list, container, false);
+
+        recyclerView = view.findViewById(R.id.recycler_view_notes);
+        FloatingActionButton fab = view.findViewById(R.id.fab_add_note);
 
         if (getArguments() != null) {
-            taskList = (ArrayList<Note>) getArguments().getSerializable("tasks");
+            noteList = (ArrayList<Note>) getArguments().getSerializable("notes");
         }
 
-        adapter = new NoteAdapter(taskList, position -> listener.onTaskSelected(position));
+        adapter = new NoteAdapter(noteList, position -> {
+            Note note = noteList.get(position);
+            listener.onEditNoteClicked(note, position);
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
         fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AddTaskActivity.class);
-            startActivityForResult(intent, 1);
+           listener.onEditNoteClicked(null, -1);
         });
 
         return view;
@@ -61,8 +66,8 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof TaskListListener) {
-            listener = (TaskListListener) context;
+        if (context instanceof NoteListListener) {
+            listener = (NoteListListener) context;
         }
     }
 }

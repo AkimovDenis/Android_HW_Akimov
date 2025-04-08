@@ -1,11 +1,10 @@
 package com.example.hwlesson8;
 
-// Task.java
-public class Task {
+public class Note {
     private String title;
     private String description;
 
-    public Task(String title, String description) {
+    public Note(String title, String description) {
         this.title = title;
         this.description = description;
     }

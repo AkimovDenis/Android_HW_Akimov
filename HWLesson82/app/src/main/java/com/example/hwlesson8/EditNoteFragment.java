@@ -11,26 +11,44 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-// AddTaskFragment.java
-public class AddTaskFragment extends Fragment {
+public class EditNoteFragment extends Fragment {
     private EditText titleInput, descInput;
-    private AddTaskListener listener;
+    private EditNoteListener listener;
+    private int notePosition = -1;
 
-    public interface AddTaskListener {
-        void onTaskAdded(Note task);
+    public interface EditNoteListener {
+        void onNoteSaved(Note note, int position);
+    }
+
+    public static EditNoteFragment newInstance(Note note, int position) {
+        EditNoteFragment fragment = new EditNoteFragment();
+        Bundle args = new Bundle();
+        if (note != null) {
+            args.putString("title", note.getTitle());
+            args.putString("desc", note.getDescription());
+        }
+        args.putInt("position", position);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_task, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_note, container, false);
         titleInput = view.findViewById(R.id.title_input);
         descInput = view.findViewById(R.id.desc_input);
         Button saveBtn = view.findViewById(R.id.save_button);
 
+        if (getArguments() != null) {
+            titleInput.setText(getArguments().getString("title", ""));
+            descInput.setText(getArguments().getString("desc", ""));
+            notePosition = getArguments().getInt("position", -1);
+        }
+
         saveBtn.setOnClickListener(v -> {
             String title = titleInput.getText().toString();
             String desc = descInput.getText().toString();
-            listener.onTaskAdded(new Note(title, desc));
+            listener.onNoteSaved(new Note(title, desc), notePosition);
         });
 
         return view;
@@ -39,8 +57,8 @@ public class AddTaskFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof AddTaskListener) {
-            listener = (AddTaskListener) context;
+        if (context instanceof EditNoteListener) {
+            listener = (EditNoteListener) context;
         }
     }
 }
